@@ -1,0 +1,10 @@
+{
+  "/api/": {
+    "target": "https://hacker-news.firebaseio.com/v0/",
+    "secure": false,
+    "pathRewrite": {
+      "^/api": ""
+    },
+    "changeOrigin": true
+  }
+}
