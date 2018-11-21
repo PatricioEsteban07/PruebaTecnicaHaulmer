@@ -1,12 +1,30 @@
-<p>
-  Top Articles
-</p>
 
-<div class="list">
-  <ul>
-    <li *ngFor="let story of stories | paginate: { itemsPerPage: 50, currentPage: actual }">
-      {{ story }}</li>
-  </ul>
+<br>
+<div class="col-md-12">
+    <h4><mat-icon>star</mat-icon>  Mejores Artículos</h4>
+</div>
+<br>
 
-  <pagination-controls (pageChange)="actual = $event"></pagination-controls>
+<div class="row justify-content-md-center">
+  <div class="col-md-10">
+    <mat-card class="example-card">
+      <mat-card-content>
+        <div class="row justify-content-md-center">
+            <div class="col-md-12 spinner-container" *ngIf="articles.length!==offset">
+                <mat-spinner mode="indeterminate"></mat-spinner>
+                <br>
+            </div>
+            <div class="col-md-12">
+              <mat-list *ngIf="articles.length==offset">
+                <div *ngFor="let article of articles">
+                  <app-article-preview [article]="article"></app-article-preview>
+                </div>
+              </mat-list>
+              <mat-paginator [length]="articlesID.length" [pageSize]="offset" [pageIndex]="actual" (page)="onPaginateChange($event.pageIndex)"></mat-paginator>
+            </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <br>
+  </div>
 </div>

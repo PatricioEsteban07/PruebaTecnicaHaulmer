@@ -1,3 +1,21 @@
-<p>
-  ERROR 404: revise la dirección a la cuál está ingresando :c
-</p>
+
+<div class="row justify-content-md-center">
+  <div class="col-md-10">  
+    <br>
+    <mat-card class="example-card">
+      <mat-card-header>
+        <div mat-card-avatar class="example-header-image"></div>
+        <mat-card-title><mat-icon>warning</mat-icon> Error 404: No se ha encontrado la página web</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>
+          La página a la que desea acceder no está disponible o no existe. Verifique la dirección ingresada, o contacte al administrador de esta página si considera existe algún problema técnico.
+        </p>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button (click)="goBack()"><mat-icon>undo</mat-icon> Volver Atrás</button>
+      </mat-card-actions>
+    </mat-card>
+    <br>
+  </div>
+</div>

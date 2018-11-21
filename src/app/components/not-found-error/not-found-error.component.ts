@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-not-found-error',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NotFoundErrorComponent implements OnInit {
 
-  constructor() { }
+  constructor(private location: Location) { }
 
   ngOnInit() {
   }
 
+  /**
+   * método para, dada la ubicación actual en la aplicación, volver a la página anterior.
+   */
+  goBack(): void {
+    this.location.back();
+  }
 }

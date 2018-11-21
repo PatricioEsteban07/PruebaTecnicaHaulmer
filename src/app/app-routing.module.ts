@@ -9,7 +9,8 @@ const routes: Routes = [
   { path: '', redirectTo: '/top', pathMatch: 'full' },
   { path: 'top', component: TopArticlesComponent },
   { path: 'story/:id', component: StoryComponent },
-  { path: '**', component: NotFoundErrorComponent },
+  { path: '**', redirectTo: '/404error', pathMatch: 'full' },
+  { path: '404error', component: NotFoundErrorComponent },
 ];
 
 @NgModule({
