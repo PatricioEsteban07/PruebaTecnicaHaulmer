@@ -1,6 +1,6 @@
 <mat-card [class.mat-card-grey]="color">
     <mat-card-header>
-        <mat-card-title><mat-icon>face</mat-icon><b> {{comment.by}}</b> {{comment.id}} - <small><i>{{comment.time | date: 'dd/MM/yyyy'}}</i></small></mat-card-title>
+        <mat-card-title><mat-icon>face</mat-icon><b> {{comment.by}}</b> - <small><i>{{comment.time | date}}</i></small></mat-card-title>
     </mat-card-header>
     <mat-card-content>
         <mat-divider [inset]="true"></mat-divider>

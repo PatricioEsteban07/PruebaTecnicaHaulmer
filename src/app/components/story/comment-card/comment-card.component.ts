@@ -30,6 +30,10 @@ export class CommentCardComponent implements OnInit {
     }
   }
 
+  /**
+   * Método que, dado un arreglo de ID, obtiene todos los comentarios hijos asociados
+   * @param kids - arreglo con los ID de los comentarios a extraer
+   */
   getKids(kids: number[]): Article[]
   {
     const base=new Array<Article>();
@@ -38,10 +42,8 @@ export class CommentCardComponent implements OnInit {
       this.service.getArticle(commentID).subscribe(
         article => {  if(article.deleted!=true) {
                         base.push(article as Article); 
-                       // console.log("Se obtuvo comment "+article.id)
                       }
-                    },
-       // error => {console.log("Error obteniendo comment "+commentID)}
+                    }
       );
     }
     return base;

@@ -18,11 +18,12 @@ export class StoryComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private location: Location,
-    private service: APIService) { }
+    private service: APIService) { 
+      this.story=new Article();
+      this.comments=new Array<Article>();
+    }
 
   ngOnInit() {
-    this.story=new Article();
-    this.comments=new Array<Article>();
     this.getStory();
   }
   
@@ -33,6 +34,10 @@ export class StoryComponent implements OnInit {
     this.location.back();
   }
 
+  /**
+   * Método que, dado el id obtenido de la URL actual, obtiene los datos del artículo asociado.
+   * 
+   */
   getStory(): void {
     const id = +this.route.snapshot.paramMap.get('id');
     this.service.getArticle(id).subscribe(
@@ -41,10 +46,15 @@ export class StoryComponent implements OnInit {
                   { 
                     this.comments=this.getComments(this.story.kids);
                   }
-               }
+               },
+      error => { this.location.go("/404error"); }
     );
   }
-  
+
+  /**
+   * Método que, dado un arreglo de ID, obtiene todos los comentarios hijos asociados
+   * @param kids - arreglo con los ID de los comentarios a extraer
+   */
   getComments(kids: number[]): Article[]
   {
     const commentsAux=new Array<Article>();

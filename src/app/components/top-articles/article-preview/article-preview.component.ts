@@ -1,8 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { Article } from 'src/app/models/Article';
 import { APIService } from '../../../services/api.service';
 
-import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { Observable } from 'rxjs';
 
@@ -14,11 +13,24 @@ import { Observable } from 'rxjs';
 export class ArticlePreviewComponent implements OnInit {
 
   @Input()
-  public article: Observable<Article>;
+  public articleID: number;
 
-  constructor(private service: APIService) { }
+  @Output() 
+  public isReady = new EventEmitter();
 
-  ngOnInit() {
+  public article: Article;
+
+  constructor(private service: APIService) {
+    this.article=new Article();
   }
 
+  ngOnInit() {
+    this.service.getArticle(this.articleID).subscribe(
+      article => {this.article = article;
+                  this.isReady.emit(1); 
+                console.log(1);},
+      error => { this.isReady.emit(2); 
+        console.log(2);}
+    );
+  }
 }

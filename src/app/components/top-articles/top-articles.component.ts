@@ -1,59 +1,87 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 
 import { APIService } from '../../services/api.service';
-import { Article } from '../../models/Article';
-import { BehaviorSubject, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-top-articles',
   templateUrl: './top-articles.component.html',
   styleUrls: ['./top-articles.component.css'],
- // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TopArticlesComponent implements OnInit {
 
+  //variable que mantiene la cantidad de articulos por página
   public offset: number;
+  //contiene los ID de todos los artículos asociados a los top 200 (esto ya que no necesariamente podrian ser 200,
+  // eso depende de la API actual)
+  public allArticlesID: number[];
+  
+  //contiene los ID de los artículos de la página actual
   public articlesID: number[];
-  public allArticles: Article[];
-  public articles: Article[];
 
-  public oarticlesID: Observable<number[]>;
-  public oallArticles: Observable<Article[]>;
-  public oarticles: Observable<Article[]>;
+  //marca para definir que el listado de articulos de la página actual están cargados correctamente
+  public isReady: boolean;
 
-  constructor(private service: APIService) {
-    this.articlesID=new Array<number>();
-    this.allArticles=new Array<Article>();
-    this.articles=new Array<Article>();
-    this.offset=50;
+  //marca para definir un problema con la carga de datos del listado de articulos de la página actual
+  public flagError: boolean;
+
+  //contador usado por el método changeIsLoading() para monitorear el estado de los hijos (articulo del listado)
+  public countChargeArticles: number;
+
+  constructor(private service: APIService,
+              private cdr: ChangeDetectorRef) {
+
+    this.allArticlesID = new Array<number>();
+    this.articlesID = new Array<number>();
+    this.offset = 5;
+
+    this.isReady = false;
+    this.isReady = false;
+    this.countChargeArticles = 0;
    }
 
   ngOnInit() {
     this.service.getArticles().subscribe(
-      stories => {this.articlesID = stories;
-                  this.oarticlesID = stories;
-                  this.articles = this.getContentOfStories(this.articlesID.slice(0,this.offset));
-                  this.allArticles = this.getContentOfStories(this.articlesID);
-              //    this.onPaginateChange(0);
-      }
+      stories => {this.allArticlesID = stories;
+                  this.articlesID = stories.slice(0,this.offset);
+      },
+      error => {this.flagError = true;}
     );
   }
 
-  onPaginateChange(index: number){
-    index = this.offset*index;
-   // this.stories=this.getContentOfStories(this.storiesID.slice(index,index+this.offset));
-    this.articles=this.allArticles.slice(index,index+this.offset);
-  }
-  
-  public getContentOfStories(storiesID: number[]): Article[]
-  {
-    const storiesAux=new Array<Article>();
-    for(let storyID of storiesID)
-    {
-      this.service.getArticle(storyID).subscribe(article => storiesAux.push(article as Article));
+  /**
+   * Método para obtener el estado de los items del listado de artículos:
+   *  Si todos llegan a ser exitosos, se muestran al usuario y se oculta el icono de loading
+   *  En caso contrario se muestra un mensaje de error.
+   * @param event - contiene la respuesta de uno de los artículos (1 - exitoso / 2 - error).
+   */
+  changeIsLoading(event){
+    if(+event == 1){
+      this.countChargeArticles++;
+      if(this.countChargeArticles == this.articlesID.length){
+        this.isReady = true;
+        this.countChargeArticles = 0;
+      }
     }
-    return storiesAux;
+    else{
+      this.flagError = true;
+    }
   }
 
+  /**
+   * Método para realizar la actualización de la lista de artículos en base a paginación.
+   * La cantidad de elementos por página se define en la variable offset, definido en el constructor.
+   * @param index - índice de la paginación requerida.
+   */
+  onPaginateChange(index: number){
+    this.flagError = false;
+    this.isReady = false;
+    index = this.offset*index;
+    this.service.getArticles().subscribe(
+      stories => {this.allArticlesID = stories;
+                  this.articlesID = stories.slice(index,index+this.offset);
+      },
+      error => {this.flagError = true;}
+    );
+  }
 
 }
